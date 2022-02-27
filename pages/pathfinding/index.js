@@ -1,15 +1,14 @@
-//
+// a new and improved version of this program is being created. This one is not working but it gives an idea to how it works
 
-let size = 15;
+let size = 15; // size of the array
 
-const stepLinear = 10;
+const stepLinear = 10; // constants of costs of steps
 const stepDiagonal = 14;
 
 
 class Node {
 
     constructor(x, y) {
-
         this.x = x;
         this.y = y;
         this.parent;
@@ -26,14 +25,13 @@ class Node {
 let startNode;
 let endNode;
 
-let objectArray = new Array();
+let objectArray = new Array(); // array of specific element objects
 
-let nodes = new Array();
+let nodes = new Array(); // array of the same coordinate objects but this time with Nodes
 
-let table = document.getElementById('game');
+let table = document.getElementById('game'); // import table element
 
-function createTable() {
-
+function createTable() { // create 2 size*size arrays, into which we put all the elements and all the objects ( separately )
     for (let i = 0; i < size; i++) {
         let _row = [];
         let row = document.createElement('tr');
@@ -57,29 +55,24 @@ function createTable() {
     }
 }
 
-function assignCost() {
+function assignCost() { // calculate gCost and hCost based on distance from start and end Nodes
 
     for (let row = 0; row < nodes.length; row++) {
         for (let col = 0; col < nodes[row].length; col++) {
             nodes[row][col].gCost = calculateDistance(nodes[row][col], startNode);
             nodes[row][col].hCost = calculateDistance(nodes[row][col], endNode);
         }
-
     }
-
 }
 
-
-let clickedStart = false;
+let clickedStart = false; // temporary variables
 let clickedEnd = false;
 let isRunning = false;
 
-
-
 function elementClicked(id) {
 
-    if (!clickedStart) {
-
+    if (!clickedStart) { // do this if start node hasn't been selected yet
+        // select an object as a start node
         let _t = document.getElementById(id);
 
         for (let row = 0; row < nodes.length; row++) {
@@ -103,8 +96,8 @@ function elementClicked(id) {
 
 
 
-    } else if (!clickedEnd) {
-
+    } else if (!clickedEnd) { // or do this if it has, but the end node hasn't
+        // select an object as an end node
         let _t = document.getElementById(id);
 
         if (!(_t == startNode.object)) {
@@ -129,7 +122,8 @@ function elementClicked(id) {
                 }
             }
         }
-    } else if (!isRunning) {
+    } else if (!isRunning) { // else do this if both have been selected but game hasn't been started yet
+        // select an object to be a wall
         let _t = document.getElementById(id);
 
         for (let row = 0; row < nodes.length; row++) {
@@ -146,25 +140,25 @@ function elementClicked(id) {
 
 }
 
-createTable();
+createTable(); // initialize the element array on screen
 
-let tempNode = new Node(null, null);
+let tempNode = new Node(null, null); // node to be used to get the smallest fCost node
 tempNode.fCost = Infinity;
 
 
 function startGame() {
 
-    let open = new Array();
-    let closed = new Array();
+    let open = new Array(); // open array stores objects that are open to searching
+    let closed = new Array(); // closed contains all the searched nodes
 
-    open.push(startNode);
+    open.push(startNode); // push start node as the first node
 
     startNode.gCost = 0;
     startNode.hCost = calculateDistance(startNode, endNode);
-    startNode.fCost = startNode.hCost + startNode.gCost;
+    startNode.fCost = startNode.hCost + startNode.gCost; // calculate costs
 
 
-    function getSmallestCost() {
+    function getSmallestCost() { // function to return the object in the array with the smallest fCost
         tempNode.fCost = Infinity;
         for (let i = 0; i < open.length; i++) {
             if (open[i].fCost < tempNode.fCost) {
@@ -174,7 +168,7 @@ function startGame() {
         return tempNode;
     }
 
-    function calculateCosts(n) {
+    function calculateCosts(n) { // function to calculate gCost, hCost and then fCost and set the objects values to it
 
         let gc = calculateDistance(n, startNode);
         let hc = calculateDistance(n, endNode);
@@ -185,25 +179,23 @@ function startGame() {
     }
 
 
-    while (open.length > 0) {
+    while (open.length > 0) { // while loop until it either finds the end node or runs out of nodes to search (in which case there is no path)
         let currentNode = getSmallestCost();
         currentNode.object.innerHTML = `${currentNode.fCost}`;
         currentNode.object.style.backgroundColor = 'yellow';
-
-        let a = sleep(5);
 
         if (currentNode == endNode) {
             console.log('found');
             break;
         }
 
-        open.splice(open.indexOf(currentNode));
-        closed.push(currentNode);
+        open.splice(open.indexOf(currentNode)); // remove current node from the open array
+        closed.push(currentNode); // and add it to the closed one
 
-        let neighbours = getNeighbours(currentNode);
+        let neighbours = getNeighbours(currentNode); // get all valid neighbours of currentNode
 
-        neighbours.forEach(element => {
-            // setTimeout(3000);
+        neighbours.forEach(element => { // for every neighbour calculate its cost and if the path from its parent is longer than from currentNode,
+            //                             set the currentNode as its parent and recalculate gCost with the currentNode's gCost
             if (closed.includes(element) || element.isWall) {} else {
 
                 calculateCosts(element);
@@ -223,7 +215,7 @@ function startGame() {
                     element.fCost = element.hCost + element.gCost;
                 }
                 if (!(open.includes(element))) {
-                    open.push(element);
+                    open.push(element); // if the neighbour is not in the open list, add it
                 }
             }
         });
@@ -233,7 +225,7 @@ function startGame() {
     startNode.object.style.backgroundColor = 'rgb(67, 255, 34)';
     endNode.object.style.backgroundColor = 'red';
 
-    function findPath() {
+    function findPath() { // trace every parent's parent starting from endNode to startNode
         let node = endNode;
         while (node != startNode) {
             node.object.style.backgroundColor = 'aqua';
@@ -255,6 +247,7 @@ function calculateDistance(currNode, targetNode) {
 
 
 function getNeighbours(currN) {
+    // checking every possible neighbour and returning an array with valid ones
 
     let arr = new Array();
 

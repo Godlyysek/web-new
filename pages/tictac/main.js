@@ -1,13 +1,12 @@
-let size = 5;
+let size = 5; // size of the array
 
 let states = ['O', 'X'];
-let turn = states[0];
+let turn = states[0]; // starting player is "O"
 
 
-let table = document.getElementById('game');
+let table = document.getElementById('game'); // get table element
 
 class Square {
-
     constructor(x, y) {
         this.x;
         this.y;
@@ -16,11 +15,10 @@ class Square {
     }
 }
 
-let squares = new Array();
+let squares = new Array(); // 2D array with every square
 
 
-function createTable() {
-
+function createTable() { // create an array of the square objects and append every "td" element to it's corresponding "tr" and that then to the table
     for (let i = 0; i < size; i++) {
         let row = new Array();
         let obj = document.createElement('tr');
@@ -41,7 +39,7 @@ function createTable() {
 }
 
 
-function clickedSquare(id) {
+function clickedSquare(id) { // get id of clicked square and set it to the current turn's index (O or X)
     console.log(id);
     let clicked = document.getElementById(id);
     clicked.innerHTML = `${turn}`;

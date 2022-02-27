@@ -13,4 +13,4 @@ Array.prototype.forEach.call(links, function(elem, index) {
             });
         });
     }
-});
+}); // remove #id after the url when we click a button
